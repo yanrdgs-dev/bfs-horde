@@ -49,7 +49,7 @@ class Zombie(LogMixin):
         
         path.append(start)
         path.reverse()
-        self.log(f"Path built: {path}")
+        self.log(f"Path built.")
         return path
     
     def draw(self, screen, node_width: int, node_height: int):

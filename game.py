@@ -95,7 +95,6 @@ while playing:
             for zombie in zombies:
                 if zombie.x == player.x and zombie.y == player.y:
                     game_state = "game_over"
-                    print("Game Over! You were caught by a zombie!")
                     break
         SCREEN.fill(BLACK)
         draw_grid(grid)
