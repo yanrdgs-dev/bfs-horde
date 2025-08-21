@@ -3,32 +3,33 @@ from packages.grid import Grid, LogMixin, Node
 from packages.zombie import Zombie
 from packages.player import Player
 import random
+
 pygame.init()
 
 # game consts
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
-NODE_WIDTH = 40
-NODE_HEIGHT = 40
-COLUMNS = SCREEN_WIDTH // NODE_WIDTH
-ROWS = SCREEN_HEIGHT // NODE_HEIGHT
-START_POS_X = COLUMNS // 2
-START_POS_Y = ROWS // 2
-GAME_OVER_FONT = pygame.font.Font(None, 74)
+SCREEN_WIDTH: int = 800
+SCREEN_HEIGHT: int = 600
+NODE_WIDTH: int = 40
+NODE_HEIGHT: int = 40
+COLUMNS: int = SCREEN_WIDTH // NODE_WIDTH
+ROWS: int = SCREEN_HEIGHT // NODE_HEIGHT
+START_POS_X: int = COLUMNS // 2
+START_POS_Y: int = ROWS // 2
+GAME_OVER_FONT: pygame.font.Font = pygame.font.Font(None, 74)
 
 # colors
-BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
-GREY = (40, 40, 40)
-BLUE = (0, 0, 255)
-GREEN = (0, 255, 0)
-RED = (255, 0, 0)
-OBSTACLE_COLOR = (128, 128, 128)
+BLACK: tuple[int, int, int] = (0, 0, 0)
+WHITE: tuple[int, int, int] = (255, 255, 255)
+GREY: tuple[int, int, int] = (40, 40, 40)
+BLUE: tuple[int, int, int] = (0, 0, 255)
+GREEN: tuple[int, int, int] = (0, 255, 0)
+RED: tuple[int, int, int] = (255, 0, 0)
+OBSTACLE_COLOR: tuple[int, int, int] = (128, 128, 128)
 
-SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+SCREEN: pygame.Surface = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Zombie Pathfinding Simulation")
 
-def draw_grid(grid):
+def draw_grid(grid: Grid) -> None:
     for x in range(0, SCREEN_WIDTH, NODE_WIDTH):
         pygame.draw.line(SCREEN, GREY, (x, 0), (x, SCREEN_HEIGHT))
 
@@ -38,7 +39,7 @@ def draw_grid(grid):
     for x in range(grid.size_x):
         for y in range(grid.size_y):
             if grid.grid[x][y].is_obstacle:
-                obstacle_rect = pygame.Rect(x * NODE_WIDTH, y * NODE_HEIGHT, NODE_WIDTH, NODE_HEIGHT)
+                obstacle_rect: pygame.Rect = pygame.Rect(x * NODE_WIDTH, y * NODE_HEIGHT, NODE_WIDTH, NODE_HEIGHT)
                 pygame.draw.rect(SCREEN, OBSTACLE_COLOR, obstacle_rect)
 
 grid: Grid = Grid(COLUMNS, ROWS, obstacle_chance=0.25)
@@ -47,8 +48,8 @@ grid.grid[START_POS_X][START_POS_Y].is_obstacle = False
 zombies: list[Zombie] = []
 for i in range(3):
     while True:
-        x = random.randint(0, COLUMNS - 1)
-        y = random.randint(0, ROWS - 1)
+        x: int = random.randint(0, COLUMNS - 1)
+        y: int = random.randint(0, ROWS - 1)
         if x != START_POS_X or y != START_POS_Y:
             break
     if x == START_POS_X and y == START_POS_Y:
@@ -61,8 +62,8 @@ game_state: str = "running"
 playing: bool = True
 while playing:
     if game_state == "running":
-        player_moved = False
-        current_time = pygame.time.get_ticks()
+        player_moved: bool = False
+        current_time: int = pygame.time.get_ticks()
         
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -87,7 +88,7 @@ while playing:
             if zombie.path and current_time - zombie.last_move_time > 500:
                 zombie.last_move_time = current_time
                 if zombie.path_index < len(zombie.path):
-                    next_node = zombie.path[zombie.path_index]
+                    next_node: Node = zombie.path[zombie.path_index]
                     zombie.x, zombie.y = next_node.x, next_node.y
                     zombie.path_index += 1
         
@@ -106,8 +107,8 @@ while playing:
 
     if game_state == "game_over":
         SCREEN.fill(WHITE)
-        game_over_text = GAME_OVER_FONT.render("YOU DIED!", True, RED)
-        text_rect = game_over_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
+        game_over_text: pygame.Surface = GAME_OVER_FONT.render("YOU DIED!", True, RED)
+        text_rect: pygame.Rect = game_over_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
         SCREEN.blit(game_over_text, text_rect)
         pygame.display.flip()
         pygame.time.wait(2000)
